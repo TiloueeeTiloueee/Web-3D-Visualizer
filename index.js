@@ -2,7 +2,7 @@
 const BG = "#000000"
 const POINTS = "#00ff00"
 const LINES = "#00ff00"
-const pSize = 15 
+const pSize = 5 
 Visualizer.width = 800
 Visualizer.height = 800
 const FPS = 60
@@ -68,10 +68,16 @@ function rotate_on_y({x, y, z}) {
         z: x * s + z * c,
     }
 }
+
+function fillCircle(x, y, radius) {
+  CTX.beginPath();
+  CTX.arc(x, y, pSize, 0, Math.PI * 2);
+  CTX.fill();
+}
 // Work
 function point({x, y}) {
     CTX.fillStyle = POINTS
-    CTX.fillRect(x - pSize / 2, y - pSize / 2, pSize, pSize)
+    fillCircle(x, y)
 }
 
 function line(p1, p2) {
