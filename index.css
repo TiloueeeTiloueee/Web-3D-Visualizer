@@ -1,23 +1,69 @@
 body {
     background: linear-gradient(135deg,rgb(90, 90, 90), rgb(0, 0, 0));
+    font-family: Arial;
+    padding: 20px;
 }
 
+.first {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.form {
+    display: grid;
+    height: 100%;
+    width: 100%;
+    grid-template-rows: auto 1fr;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "top top" "left right";
+}
+
+.top {
+    grid-area: top;
+}
+
+.left {
+    grid-area: left;
+}
+
+.right {
+    grid-area: right;
+}
+
+.bottom {
+    grid-area: bottom;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.group {
+    margin-bottom: 15px;
+}
 
 #Visualizer {
-  width: min(50vw, 100vh);
-  aspect-ratio: 1 / 1;
+    max-width: 100%;
+    max-height: 100%;
+    aspect-ratio: 1 / 1;
 }
 
 #VBackdrop {
     display: flex;
+    justify-content: center;
     align-items: center;
-    height: 100vh;
-    width: fit-content;
+    height: 100%;
+    width: 100%;
+
+
     background-color: rgb(30, 30, 30);
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
 }
 
 #FBackdrop {
-    display: flex;
-    height: 100vh;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
     background-color: rgb(160, 160, 160);
 }

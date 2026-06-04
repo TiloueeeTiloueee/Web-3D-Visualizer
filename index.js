@@ -2,7 +2,7 @@
 const BG = "#000000"
 const POINTS = "#00ff00"
 const LINES = "#00ff00"
-const pSize = 5 
+let pSize = 10
 Visualizer.width = 800
 Visualizer.height = 800
 const FPS = 60
@@ -105,7 +105,11 @@ function project({x, y, z}) {
 function render() {
     //dz += 1*dt
     angle += 2*Math.PI*dt / 8
+    if (pSize > 0.9) {
+        //pSize -= (pSize/dz) * dt
+    }
     clear()
+
     // Rendering Points
     for (const p of points) {
         point(screen(project(translate_z(rotate_on_y(p)))))
@@ -123,6 +127,10 @@ function render() {
     
     setTimeout(render, 1000/FPS);
 }
+
+function Start() {
+    setTimeout(render, 1000/FPS);
+}
 //////////////////////////////////////////
 // START
-setTimeout(render, 1000/FPS);
+Start()
