@@ -17,19 +17,30 @@ body {
     width: 100%;
     grid-template-rows: auto 1fr;
     grid-template-columns: 1fr 1fr;
-    grid-template-areas: "top top" "left right";
+    grid-template-areas: "top top" "left right" "bottom bottom";;
 }
 
 .top {
     grid-area: top;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .left {
     grid-area: left;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 10px;
 }
 
 .right {
     grid-area: right;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 10px;
 }
 
 .bottom {
@@ -37,6 +48,10 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.form-element {
+    margin: 25px;
 }
 
 .group {
@@ -55,8 +70,6 @@ body {
     align-items: center;
     height: 100%;
     width: 100%;
-
-
     background-color: rgb(30, 30, 30);
     border-top-left-radius: 20px;
     border-bottom-left-radius: 20px;
@@ -66,4 +79,11 @@ body {
     border-top-right-radius: 20px;
     border-bottom-right-radius: 20px;
     background-color: rgb(160, 160, 160);
+}
+
+#submitBtn {
+    border-radius: 10px;
+    padding: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
