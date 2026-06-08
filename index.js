@@ -1,7 +1,10 @@
 // VISUAL CONFIG
-const BG = "#000000"
-const POINTS = "#00ff00"
-const LINES = "#00ff00"
+const VISUALS = {
+    BG: "#000000",
+    POINTS: "#00ff00",
+    LINES: "#00ff00"
+}
+
 let pSize = 10
 Visualizer.width = 800
 Visualizer.height = 800
@@ -17,6 +20,7 @@ const CTX = Visualizer.getContext("2d")
 
 // Frame Values
 const dt = 1/FPS
+let rs = 0.125
 let dz = 1
 
 // Visualizing Values
@@ -45,13 +49,16 @@ const faces = [
 
 // Animation Values
 let angle = 0
-
+let moving = false
+let rotating = true
+let pointsEnabled = false
+let linesEna = false
 //////////////////////////////////////////
 // FUNCTIONS
 
 // Util
 function clear() {
-    CTX.fillStyle = BG
+    CTX.fillStyle = VISUALS["BG"]
     CTX.fillRect(0, 0, Visualizer.width, Visualizer.height)
 }
 
@@ -76,12 +83,12 @@ function fillCircle(x, y, radius) {
 }
 // Work
 function point({x, y}) {
-    CTX.fillStyle = POINTS
+    CTX.fillStyle = VISUALS["POINTS"]
     fillCircle(x, y)
 }
 
 function line(p1, p2) {
-    CTX.strokeStyle = LINES
+    CTX.strokeStyle = VISUALS["LINES"]
     CTX.beginPath()
     CTX.moveTo(p1.x, p1.y)
     CTX.lineTo(p2.x, p2.y)
@@ -102,19 +109,31 @@ function project({x, y, z}) {
     }
 }
 
-function render() {
-    //dz += 1*dt
-    angle += 2*Math.PI*dt / 8
-    if (pSize > 0.9) {
-        //pSize -= (pSize/dz) * dt
-    }
-    clear()
+function position({x, y, z}) {
+    const vector3D = {x: x, y: y, z: z}
+    return screen(project(translate_z(rotate_on_y(vector3D))))
+}
 
-    // Rendering Points
-    for (const p of points) {
-        point(screen(project(translate_z(rotate_on_y(p)))))
+function stepTransformation() {
+    if (moving) {
+        dz += 1*dt
+        if (pSize > 0.9) {
+            pSize -= (pSize/dz) * dt
+        }
     }
-    // Rendering Lines
+    
+    if (rotating) {
+        angle = (angle + (rs * 2 * Math.PI) * dt) % (2 * Math.PI)
+    }
+}
+
+function draw() {
+    clear()
+        for (const p of points) {
+        point(position(p))
+    }
+    
+        // Rendering Lines
     for (const f of faces) {
         for (let i=0; i < f.length; ++i) {
             const a = points[f[i]]
@@ -124,7 +143,16 @@ function render() {
             
         }
     }
+}
     
+function render() {
+    // Update Transformation Values
+    stepTransformation()
+
+    // Draw Frame
+    draw()
+
+    // Run Next Frame
     setTimeout(render, 1000/FPS);
 }
 
