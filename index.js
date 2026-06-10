@@ -1,3 +1,6 @@
+// IMPORTS
+import Vector3D from "./Types/Vector3D.js"
+
 // VISUAL CONFIG
 const VISUALS = {
     BG: "#000000",
@@ -26,16 +29,16 @@ let dz = 1
 // Visualizing Values
 const points = [
     // Plane 1
-    {x: 0.25, y: 0.25, z: 0.25},
-    {x: -0.25, y: 0.25, z: 0.25},
-    {x: -0.25, y: -0.25, z: 0.25},
-    {x: 0.25, y: -0.25, z: 0.25},
+    new Vector3D(0.25, 0.25, 0.25),
+    new Vector3D(-0.25, 0.25, 0.25),
+    new Vector3D(-0.25, -0.25, 0.25),
+    new Vector3D(0.25, -0.25, 0.25),
 
     // Plane 2
-    {x: 0.25, y: 0.25, z: -0.25},
-    {x: -0.25, y: 0.25, z: -0.25},
-    {x: -0.25, y: -0.25, z: -0.25},
-    {x: 0.25, y: -0.25, z: -0.25},
+    new Vector3D(0.25, 0.25, -0.25),
+    new Vector3D(-0.25, 0.25, -0.25),
+    new Vector3D(-0.25, -0.25, -0.25),
+    new Vector3D(0.25, -0.25, -0.25),
 ]
 
 const faces = [
@@ -62,18 +65,25 @@ function clear() {
     CTX.fillRect(0, 0, Visualizer.width, Visualizer.height)
 }
 
-function translate_z({x, y, z}) {
-    return {x: x, y: y, z: z + dz}
+/**
+ * @param {Vector3D} vector3D
+ */
+function translate_z(vector3D) {
+    vector3D.z = vector3D.z + dz
+    return vector3D
 }
 
-function rotate_on_y({x, y, z}) {
+/**
+ * @param {Vector3D} vector3D
+ */
+function rotate_on_y(vector3D) {
     const c = Math.cos(angle)
     const s = Math.sin(angle)
-    return {
-        x: x * c - z * s,
-        y,
-        z: x * s + z * c,
-    }
+    const x = vector3D.x * c - vector3D.z * s
+    const z = vector3D.x * s + vector3D.z * c
+    vector3D.x = x
+    vector3D.z = z
+    return vector3D
 }
 
 function fillCircle(x, y, radius) {
@@ -95,23 +105,31 @@ function line(p1, p2) {
     CTX.stroke()
 }
 
-function screen(p) {
+/**
+ * @param {Vector3D} vector3D
+ */
+function screen(vector3D) {
     return {
-        x: (p.x + 1)/ 2 * Visualizer.width,
-        y: (1 - (p.y + 1) / 2) * Visualizer.height,
+        x: (vector3D.x + 1)/ 2 * Visualizer.width,
+        y: (1 - (vector3D.y + 1) / 2) * Visualizer.height,
     }
 }
 
-function project({x, y, z}) {
-    return {
-        x: x / z,
-        y: y / z,
-    }
+/**
+ * @param {Vector3D} vector3D
+ */
+function project(vector3D) {
+    vector3D.x = vector3D.x / vector3D.z
+    vector3D.y = vector3D.y / vector3D.z
+    return vector3D
 }
 
-function position({x, y, z}) {
-    const vector3D = {x: x, y: y, z: z}
-    return screen(project(translate_z(rotate_on_y(vector3D))))
+/**
+ * @param {Vector3D} vector3D
+ */
+function position(vector3D) {
+    const v = new Vector3D(vector3D.x, vector3D.y, vector3D.z)
+    return screen(project(translate_z(rotate_on_y(v))))
 }
 
 function stepTransformation() {
@@ -129,7 +147,7 @@ function stepTransformation() {
 
 function draw() {
     clear()
-        for (const p of points) {
+    for (const p of points) {
         point(position(p))
     }
     
@@ -138,8 +156,8 @@ function draw() {
         for (let i=0; i < f.length; ++i) {
             const a = points[f[i]]
             const b = points[f[(i+1)%f.length]]
-            line(screen(project(translate_z(rotate_on_y(a)))),
-            screen(project(translate_z(rotate_on_y(b)))))
+            line(position(a),
+            position(b))
             
         }
     }
