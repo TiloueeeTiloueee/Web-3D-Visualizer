@@ -1,6 +1,7 @@
 // IMPORTS
 import Vector3D from "./Types/Vector3D.js"
-
+import { getState } from "./form.js"
+import { logger } from "./logger.js"
 // VISUAL CONFIG
 const VISUALS = {
     BG: "#000000",
@@ -55,11 +56,13 @@ let angle = 0
 let moving = false
 let rotating = true
 let pointsEnabled = false
-let linesEna = false
+let linesEnabled = false
 //////////////////////////////////////////
 // FUNCTIONS
 
 // Util
+const log = logger("index.js")
+
 function clear() {
     CTX.fillStyle = VISUALS["BG"]
     CTX.fillRect(0, 0, Visualizer.width, Visualizer.height)
@@ -147,18 +150,21 @@ function stepTransformation() {
 
 function draw() {
     clear()
-    for (const p of points) {
-        point(position(p))
+    if (getState("pointsEnabled")) {
+        for (const p of points) {
+            point(position(p))
+        }
     }
     
-        // Rendering Lines
-    for (const f of faces) {
-        for (let i=0; i < f.length; ++i) {
-            const a = points[f[i]]
-            const b = points[f[(i+1)%f.length]]
-            line(position(a),
-            position(b))
-            
+    if (getState("linesEnabled")) {
+        for (const f of faces) {
+            for (let i=0; i < f.length; ++i) {
+                const a = points[f[i]]
+                const b = points[f[(i+1)%f.length]]
+                line(position(a),
+                position(b))
+                
+            }
         }
     }
 }
@@ -177,6 +183,7 @@ function render() {
 function Start() {
     setTimeout(render, 1000/FPS);
 }
+
 //////////////////////////////////////////
 // START
 Start()
